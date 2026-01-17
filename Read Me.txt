@@ -1,0 +1,3 @@
+To start the engine
+Add to a vm: startup_script_gcp.sh, inverted_index_gcp.py, frontend.py, backend.py.
+run startup_script_gcp.sh, enter the created venv and then run frontend.py.

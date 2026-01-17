@@ -1,24 +1,45 @@
 from flask import Flask, request, jsonify
-from Backend import Backend_Search
+from backend import *
 
-# יצירת אפליקציית Flask
 app = Flask(__name__)
-app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
-
-# יצירת backend
 backend = Backend_Search()
-
 
 @app.route("/search")
 def search():
-    res = []
     query = request.args.get('query', '')
-    if len(query) == 0:
-        return jsonify(res)
+    if not query:
+        return jsonify([])
+    return jsonify(backend.search_body_bm25(query))
 
-    res = backend.search_body(query)
+@app.route("/search_body")
+def search_body():
+    query = request.args.get('query', '')
+    if not query:
+        return jsonify([])
+    return jsonify(backend.search_body(query))
+
+@app.route("/search_title")
+def search_title():
+    query = request.args.get('query', '')
+    if not query:
+        return jsonify([])
+    return jsonify(backend.search_title(query))
+
+@app.route("/search_anchor")
+def search_anchor():
+    query = request.args.get('query', '')
+    if not query:
+        return jsonify([])
+    return jsonify(backend.search_anchor(query))
+
+@app.route("/get_pageview", methods=['POST'])
+def get_pageview():
+    res = []
+    wiki_ids = request.get_json()
+    if len(wiki_ids) == 0:
+      return jsonify(res)
+    res = backend.get_pageviews(wiki_ids)
     return jsonify(res)
 
-
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080, debug=False)
+    app.run(host="0.0.0.0", port=8080, debug=True)
