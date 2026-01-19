@@ -44,7 +44,7 @@ gcloud compute instances tail-serial-port-output $INSTANCE_NAME --zone $ZONE
 gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="table(name,status,zone,EXTERNAL_IP)"
 
 # 4. Secure copy your app to the VM (assume frontend.py is available in the current directory)
-gcloud compute scp ./frontend.py \
+gcloud compute scp ./frontend.py ./backend.py ./inverted_index_gcp.py ./startup_script_gcp.sh \
   ${GOOGLE_ACCOUNT_NAME}@${INSTANCE_NAME}:/home/${GOOGLE_ACCOUNT_NAME} \
   --zone ${ZONE}
 
@@ -61,6 +61,10 @@ gcloud compute ssh $GOOGLE_ACCOUNT_NAME@$INSTANCE_NAME --zone $ZONE
 # PY
 
 # alternative server running method (instead of step 7)
+# Make it executable
+chmod +x startup_script_gcp.sh
+# Run it
+sudo ./startup_script_gcp.sh
 # Activate the environment and enter venv
 source ~/venv/bin/activate
 python3 frontend.py
